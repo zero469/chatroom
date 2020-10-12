@@ -38,9 +38,9 @@ func main() {
 		fmt.Scanln(&userPWD)
 		err := login(userID, userPWD)
 		if err != nil {
-			fmt.Println("登陆成功")
-		} else {
 			fmt.Println("登陆失败")
+		} else {
+			fmt.Println("登陆成功")
 		}
 	} else if key == 2 {
 		fmt.Println("注册流程")
