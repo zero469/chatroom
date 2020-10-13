@@ -5,8 +5,8 @@ const (
 	LoginMesType    = "LoginMes"
 	LoginMesResType = "LoginMesRes"
 	//返回状态码
-	UnRegisterCode = 500
-	LoginSuccess   = 200
+	UnRegisterCode   = 500
+	LoginSuccessCode = 200
 )
 
 //Message 为客户端和服务器公用的消息结构

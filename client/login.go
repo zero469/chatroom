@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"go_code/chapter18/project3/common/message"
@@ -38,23 +37,33 @@ func login(userID int, userPWD string) (err error) {
 		fmt.Println("json.Marshal err=", err)
 	}
 
-	//5. 先发送mesData的长度
-	pkgByte := make([]byte, 4)
-	binary.BigEndian.PutUint32(pkgByte[0:4], uint32(len(mesData)))
-	n, err := conn.Write(pkgByte)
-	if n != 4 || err != nil {
-		fmt.Println("", err)
-		return err
-	}
-	fmt.Println("客户端发送消息长度成功")
-
-	//6. 发送mesData
-	n, err = conn.Write(mesData)
+	//5. 发送mes包
+	err = writePkg(conn, mesData)
 	if err != nil {
-		fmt.Println("conn.Write err=", err)
-		return err
+		fmt.Println("writePkg fail", err)
+		return
 	}
 
-	fmt.Printf("客户端成功发送%v个字节的数据%v\n", n, string(mesData))
+	//6. 读服务器的response包
+	mes, err = readPkg(conn)
+	if err != nil {
+		fmt.Println("readPkg fail :", err)
+		return
+	}
+
+	//7. 解析response包
+	var loginResMes message.LoginResMes
+	err = json.Unmarshal([]byte(mes.Data), &loginResMes)
+	if err != nil {
+		fmt.Println("json.Unmarshal err=", err)
+		return
+	}
+
+	if loginResMes.Code == message.LoginSuccessCode {
+		fmt.Println("登录成功")
+	} else if loginResMes.Code == message.UnRegisterCode {
+		fmt.Println(loginResMes.Error)
+	}
+
 	return nil
 }
