@@ -1,13 +1,17 @@
-package main
+package process
 
 import (
 	"encoding/json"
 	"fmt"
+	"go_code/chapter18/project3/client/utils"
 	"go_code/chapter18/project3/common/message"
 	"net"
 )
 
-func login(userID int, userPWD string) (err error) {
+type UserProcess struct {
+}
+
+func (up *UserProcess) Login(userID int, userPWD string) (err error) {
 	//1. 连接服务器
 	conn, err := net.Dial("tcp", "0.0.0.0:8889")
 	if err != nil {
@@ -37,15 +41,18 @@ func login(userID int, userPWD string) (err error) {
 		fmt.Println("json.Marshal err=", err)
 	}
 
+	tf := &utils.Transfer{
+		Conn: conn,
+	}
 	//5. 发送mes包
-	err = writePkg(conn, mesData)
+	err = tf.WritePkg(mesData)
 	if err != nil {
 		fmt.Println("writePkg fail", err)
 		return
 	}
 
 	//6. 读服务器的response包
-	mes, err = readPkg(conn)
+	mes, err = tf.ReadPkg()
 	if err != nil {
 		fmt.Println("readPkg fail :", err)
 		return
@@ -61,9 +68,29 @@ func login(userID int, userPWD string) (err error) {
 
 	if loginResMes.Code == message.LoginSuccessCode {
 		fmt.Println("登录成功")
+		go serverProcessMes(conn)
+		//1. 显示登陆成功的界面
+		for {
+			ShowMenu()
+		}
 	} else if loginResMes.Code == message.UnRegisterCode {
 		fmt.Println(loginResMes.Error)
 	}
 
 	return nil
+}
+
+func serverProcessMes(Conn net.Conn) {
+	tf := &utils.Transfer{
+		Conn: Conn,
+	}
+	for {
+		fmt.Println("客户端等待服务器发送消息")
+		mes, err := tf.ReadPkg()
+		if err != nil {
+			fmt.Println("tf.ReadPkg err=", err)
+			return
+		}
+		fmt.Println("mes = ", mes)
+	}
 }

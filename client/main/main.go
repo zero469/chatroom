@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"go_code/chapter18/project3/client/process"
 )
 
 var userID int
@@ -20,7 +21,15 @@ func main() {
 		switch key {
 		case 1:
 			fmt.Println("登陆聊天室")
-			loop = false
+			fmt.Printf("请输入用户ID :")
+			fmt.Scanln(&userID)
+
+			fmt.Printf("请输入用户密码 :")
+			fmt.Scanln(&userPWD)
+
+			up := &process.UserProcess{}
+			_ = up.Login(userID, userPWD)
+
 		case 2:
 			fmt.Println("注册用户")
 		case 3:
@@ -30,21 +39,5 @@ func main() {
 			fmt.Println("输入有误，请重新输入")
 		}
 	}
-	if key == 1 {
-		fmt.Printf("请输入用户ID :")
-		fmt.Scanln(&userID)
 
-		fmt.Printf("请输入用户密码 :")
-		fmt.Scanln(&userPWD)
-		err := login(userID, userPWD)
-		if err != nil {
-			fmt.Println("登陆失败")
-		} else {
-			fmt.Println("登陆成功")
-		}
-	} else if key == 2 {
-		fmt.Println("注册流程")
-	} else if key == 3 {
-		fmt.Println("退出流程")
-	}
 }

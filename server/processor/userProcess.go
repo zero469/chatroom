@@ -1,20 +1,19 @@
 package processor
 
-
 import (
-	"go_code/chapter18/project3/server/utils"
 	"encoding/json"
 	"fmt"
 	"go_code/chapter18/project3/common/message"
+	"go_code/chapter18/project3/server/utils"
 	"net"
 )
 
 //UserProcess 负责和用户相关的操作
-type UserProcess struct{
+type UserProcess struct {
 	Conn net.Conn
 }
 
-func (userProcess *UserProcess)ServerProcessLogin(mes *message.Message) (err error) {
+func (userProcess *UserProcess) ServerProcessLogin(mes *message.Message) (err error) {
 	var loginMes message.LoginMes
 
 	err = json.Unmarshal([]byte(mes.Data), &loginMes)
@@ -50,11 +49,10 @@ func (userProcess *UserProcess)ServerProcessLogin(mes *message.Message) (err err
 		return
 	}
 
-
 	//创建Transfer实例
 
 	tfer := &utils.Transfer{
-		Conn : userProcess.Conn,
+		Conn: userProcess.Conn,
 	}
 	err = tfer.WritePkg(data)
 	return
