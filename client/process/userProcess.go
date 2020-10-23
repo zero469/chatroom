@@ -73,7 +73,7 @@ func (up *UserProcess) Login(userID int, userPWD string) (err error) {
 		for {
 			ShowMenu()
 		}
-	} else if loginResMes.Code == message.UnRegisterCode {
+	} else {
 		fmt.Println(loginResMes.Error)
 	}
 
