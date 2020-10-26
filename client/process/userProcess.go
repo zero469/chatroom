@@ -11,6 +11,65 @@ import (
 type UserProcess struct {
 }
 
+
+func (up *UserProcess)Register(userID int, userPWD string, userName string) (err error) {
+	conn, err := net.Dial("tcp", "0.0.0.0:8889")
+	if err != nil {
+		fmt.Println("net.Dial() err=", err)
+		return err
+	}
+	defer conn.Close()
+
+	var mes message.Message
+	mes.Type = message.RegisterMesType
+
+	var RegiMes message.RegisterMes
+	RegiMes.User.UserID = userID
+	RegiMes.User.UserPwd = userPWD
+	RegiMes.User.UserName = userName
+	RegiData , err := json.Marshal(RegiMes)
+	if err != nil {
+		fmt.Println("json.Marshal err = ", err)
+		return err
+	}
+
+	mes.Data = string(RegiData)
+	mesData, err := json.Marshal(mes)
+	if err != nil {
+		fmt.Println("json.Marshal err=", err)
+	}
+
+	tf := &utils.Transfer{
+		Conn: conn,
+	}
+
+	err = tf.WritePkg(mesData)
+	if err != nil {
+		fmt.Println("writePkg fail", err)
+		return
+	}
+
+	mes, err = tf.ReadPkg()
+	if err != nil {
+		fmt.Println("readPkg fail :", err)
+		return
+	}
+
+	var RegiResMes message.RegisterResMes
+	err = json.Unmarshal([]byte(mes.Data), &RegiResMes)
+	if err != nil {
+		fmt.Println("json.Unmarshal err=", err)
+		return
+	}
+
+	if RegiResMes.Code == message.RegisterSuccessCode {
+		fmt.Println("注册成功，请重新登陆")
+	} else {
+		fmt.Println(RegiResMes.Error)
+	}
+	return nil
+}
+
 func (up *UserProcess) Login(userID int, userPWD string) (err error) {
 	//1. 连接服务器
 	conn, err := net.Dial("tcp", "0.0.0.0:8889")

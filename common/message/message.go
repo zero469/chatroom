@@ -4,11 +4,17 @@ const (
 	//消息类型
 	LoginMesType    = "LoginMes"
 	LoginMesResType = "LoginMesRes"
+
+	RegisterMesType = "RegisterMesType"
+	RegisterResMesType = "RegisterResMesType"
 	//返回状态码
 	UnRegisterCode    = 500
 	LoginSuccessCode  = 200
 	WrongPasswordCode = 403
 	ServerErrorCode   = 505
+
+	UserIdBeenUsedCode	  = 400
+	RegisterSuccessCode   = 200
 )
 
 //Message 为客户端和服务器公用的消息结构
@@ -25,6 +31,15 @@ type LoginMes struct {
 }
 
 type LoginResMes struct {
+	Code  int    `json:"code"`  //返回状态码
+	Error string `json:"error"` //错误信息
+}
+
+type RegisterMes struct{
+	User User	`json:"user"`
+}
+
+type RegisterResMes struct{
 	Code  int    `json:"code"`  //返回状态码
 	Error string `json:"error"` //错误信息
 }
