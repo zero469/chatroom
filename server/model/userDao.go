@@ -3,6 +3,7 @@ package model
 import (
 	"encoding/json"
 	"fmt"
+	"go_code/chapter18/project3/common/message"
 
 	"github.com/redigo/redis"
 )
@@ -56,4 +57,27 @@ func (dao *UserDao) Login(userID int, userPwd string) (user *User, err error) {
 		return nil, ERROR_USER_PWD
 	}
 	return user, nil
+}
+
+//Register 检查数据库中是否有该用户id，如没有则加入
+func (dao *UserDao) Register(user *message.User) (err error) {
+	conn := dao.pool.Get()
+	defer conn.Close()
+
+	_, err = dao.getUserByID(conn, user.UserID)
+	//如果没出错，说明数据库中有该用户id
+	if err == nil {
+		fmt.Println(err)
+		return ERROR_USER_EXISTS
+	}
+
+	data, err := json.Marshal(user)
+	if err != nil {
+		fmt.Println("json.Marshal err=", err)
+		return err
+	}
+
+	conn.Do("HSET", "users", user.UserID, string(data))
+
+	return nil
 }

@@ -14,7 +14,59 @@ type UserProcess struct {
 	Conn net.Conn
 }
 
-func (userProcess *UserProcess) ServerProcessLogin(mes *message.Message) (err error) {
+//ServerProcessRegister 处理注册消息
+func (ups *UserProcess) ServerProcessRegister(mes *message.Message) (err error) {
+	var regiMes message.RegisterMes
+
+	err = json.Unmarshal([]byte(mes.Data), &regiMes)
+	if err != nil {
+		fmt.Println("json.Unmarshal err = ", err)
+		return
+	}
+
+	user := &regiMes.User
+	err = model.MyUserDao.Register(user)
+
+	var regiResMes message.RegisterResMes
+	if err != nil {
+		if err == model.ERROR_USER_EXISTS {
+			regiResMes.Code = message.UserIdBeenUsedCode
+			regiResMes.Error = err.Error()
+		} else {
+			regiResMes.Code = message.ServerErrorCode
+			regiResMes.Error = "服务器内部错误"
+		}
+	} else {
+		regiResMes.Code = message.RegisterSuccessCode
+		fmt.Printf("用户 %v 注册成功", user.UserName)
+	}
+
+	var resMes message.Message
+	resMes.Type = message.RegisterResMesType
+	data, err := json.Marshal(regiResMes)
+	if err != nil {
+		fmt.Println("json.Marshal(regiResMes) err=", err)
+		return
+	}
+	resMes.Data = string(data)
+
+	data, err = json.Marshal(resMes)
+	if err != nil {
+		fmt.Println("json.Marshal(resMes) err=", err)
+		return
+	}
+
+	//创建Transfer实例
+
+	tfer := &utils.Transfer{
+		Conn: ups.Conn,
+	}
+	err = tfer.WritePkg(data)
+	return
+}
+
+//ServerProcessLogin 处理登录消息
+func (ups *UserProcess) ServerProcessLogin(mes *message.Message) (err error) {
 	var loginMes message.LoginMes
 
 	err = json.Unmarshal([]byte(mes.Data), &loginMes)
@@ -43,7 +95,7 @@ func (userProcess *UserProcess) ServerProcessLogin(mes *message.Message) (err er
 		}
 	} else {
 		loginResMes.Code = message.LoginSuccessCode
-		fmt.Printf("%v 登陆成功", user.UserName)
+		fmt.Printf("用户 %v 登录成功", user.UserName)
 	}
 
 	data, err := json.Marshal(loginResMes)
@@ -62,7 +114,7 @@ func (userProcess *UserProcess) ServerProcessLogin(mes *message.Message) (err er
 	//创建Transfer实例
 
 	tfer := &utils.Transfer{
-		Conn: userProcess.Conn,
+		Conn: ups.Conn,
 	}
 	err = tfer.WritePkg(data)
 	return
