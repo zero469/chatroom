@@ -60,6 +60,7 @@ func (dao *UserDao) Login(userID int, userPwd string) (user *User, err error) {
 }
 
 //Register 检查数据库中是否有该用户id，如没有则加入
+//TODO: 统一User的使用
 func (dao *UserDao) Register(user *message.User) (err error) {
 	conn := dao.pool.Get()
 	defer conn.Close()
