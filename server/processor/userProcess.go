@@ -95,6 +95,8 @@ func (ups *UserProcess) ServerProcessLogin(mes *message.Message) (err error) {
 		}
 	} else {
 		loginResMes.Code = message.LoginSuccessCode
+		//登录成功后将该用户加入到UserMgr中
+		UserMgr.Add(loginMes.UserId, ups)
 		fmt.Printf("用户 %v 登录成功", user.UserName)
 	}
 
