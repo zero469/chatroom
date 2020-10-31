@@ -97,6 +97,14 @@ func (ups *UserProcess) ServerProcessLogin(mes *message.Message) (err error) {
 		loginResMes.Code = message.LoginSuccessCode
 		//登录成功后将该用户加入到UserMgr中
 		UserMgr.Add(loginMes.UserId, ups)
+
+		//广播在线用户列表
+		loginResMes.Users = make([]int, 0)
+		for id := range UserMgr.users {
+			fmt.Println("userid : ", id, "up : ", UserMgr.users[id])
+			loginResMes.Users = append(loginResMes.Users, id)
+		}
+
 		fmt.Printf("用户 %v 登录成功", user.UserName)
 	}
 

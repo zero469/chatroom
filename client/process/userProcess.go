@@ -11,8 +11,7 @@ import (
 type UserProcess struct {
 }
 
-
-func (up *UserProcess)Register(userID int, userPWD string, userName string) (err error) {
+func (up *UserProcess) Register(userID int, userPWD string, userName string) (err error) {
 	conn, err := net.Dial("tcp", "0.0.0.0:8889")
 	if err != nil {
 		fmt.Println("net.Dial() err=", err)
@@ -27,7 +26,7 @@ func (up *UserProcess)Register(userID int, userPWD string, userName string) (err
 	RegiMes.User.UserID = userID
 	RegiMes.User.UserPwd = userPWD
 	RegiMes.User.UserName = userName
-	RegiData , err := json.Marshal(RegiMes)
+	RegiData, err := json.Marshal(RegiMes)
 	if err != nil {
 		fmt.Println("json.Marshal err = ", err)
 		return err
@@ -127,8 +126,13 @@ func (up *UserProcess) Login(userID int, userPWD string) (err error) {
 
 	if loginResMes.Code == message.LoginSuccessCode {
 		fmt.Println("登录成功")
+		//1. 显示在线用户列表
+		fmt.Println("当前在线用户：")
+		for _, id := range loginResMes.Users {
+			fmt.Println("user id = ", id)
+		}
 		go serverProcessMes(conn)
-		//1. 显示登陆成功的界面
+		//2. 显示登陆成功的界面
 		for {
 			ShowMenu()
 		}
