@@ -126,9 +126,17 @@ func (up *UserProcess) Login(userID int, userPWD string) (err error) {
 
 	if loginResMes.Code == message.LoginSuccessCode {
 		fmt.Println("登录成功")
+		myId = userID
 		//1. 显示在线用户列表
 		fmt.Println("当前在线用户：")
 		for _, id := range loginResMes.Users {
+			if id == myId {
+				continue
+			}
+			//初始化在线用户列表
+			onlineUsers[id] = &message.User{
+				UserID: id,
+			}
 			fmt.Println("user id = ", id)
 		}
 		go serverProcessMes(conn)
