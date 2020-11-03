@@ -100,11 +100,14 @@ func (ups *UserProcess) ServerProcessLogin(mes *message.Message) (err error) {
 
 		//广播在线用户列表
 		//TODO:重构上线广播代码，使用独立的消息类型，后续可扩展下线广播
+		//1. 给登录成功的用户发送在线用户列表
 		loginResMes.Users = make([]int, 0)
 		for id := range UserMgr.users {
 			fmt.Println("userid : ", id, "up : ", UserMgr.users[id])
 			loginResMes.Users = append(loginResMes.Users, id)
 		}
+		//2. 更新其他在线用户的在线用户列表
+		UpdateUserState(loginMes.UserId, message.UserOnlineState)
 
 		fmt.Printf("用户 %v 登录成功", user.UserName)
 	}
@@ -129,4 +132,30 @@ func (ups *UserProcess) ServerProcessLogin(mes *message.Message) (err error) {
 	}
 	err = tfer.WritePkg(data)
 	return
+}
+
+func (ups *UserProcess) updateUserState(mes *message.UpdataUserStateMes) (err error) {
+	//构造消息结构体
+	var updateMes message.Message
+	updateMes.Type = message.UpdataUserStateMesType
+
+	data, err := json.Marshal(*mes)
+	if err != nil {
+		fmt.Println("json.Marshal err=", err)
+		return err
+	}
+
+	updateMes.Data = string(data)
+
+	data, err = json.Marshal(updateMes)
+	if err != nil {
+		fmt.Println("json.Marshal err=", err)
+		return err
+	}
+
+	tf := &utils.Transfer{
+		Conn: ups.Conn,
+	}
+	err = tf.WritePkg(data)
+	return err
 }

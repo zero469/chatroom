@@ -1,5 +1,9 @@
 package processor
 
+import (
+	"go_code/chapter18/project3/common/message"
+)
+
 //UserMgr 服务器端全局在线用户管理对象
 var UserMgr *onlineUsers
 
@@ -38,4 +42,21 @@ func (userMgr *onlineUsers) GetAll() (ups []*UserProcess) {
 		ups = append(ups, up)
 	}
 	return
+}
+
+//UpdateUserState 通知其他用户有用户状态发生该表，通知每个user使用的是up.updateUserState函数
+func UpdateUserState(userID int, userStauts string) {
+	//构造消息结构体
+	mes := &message.UpdataUserStateMes{
+		UserID: userID,
+		State:  userStauts,
+	}
+
+	for id, up := range UserMgr.users {
+		if id == userID {
+			continue
+		}
+
+		up.updateUserState(mes)
+	}
 }

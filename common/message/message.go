@@ -7,6 +7,8 @@ const (
 
 	RegisterMesType    = "RegisterMesType"
 	RegisterResMesType = "RegisterResMesType"
+
+	UpdataUserStateMesType = "UpdataUserStateMesType"
 	//返回状态码
 	UnRegisterCode    = 500
 	LoginSuccessCode  = 200
@@ -15,6 +17,9 @@ const (
 
 	UserIdBeenUsedCode  = 400
 	RegisterSuccessCode = 200
+
+	//用户状态
+	UserOnlineState = "UserOnlineState"
 )
 
 //Message 为客户端和服务器公用的消息结构
@@ -43,4 +48,9 @@ type RegisterMes struct {
 type RegisterResMes struct {
 	Code  int    `json:"code"`  //返回状态码
 	Error string `json:"error"` //错误信息
+}
+
+type UpdataUserStateMes struct {
+	UserID int    `json:"userid"`
+	State  string `json:"state"`
 }
