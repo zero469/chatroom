@@ -1,7 +1,9 @@
 package processor
 
 import (
+	"fmt"
 	"go_code/chapter18/project3/common/message"
+	"net"
 )
 
 //UserMgr 服务器端全局在线用户管理对象
@@ -42,6 +44,15 @@ func (userMgr *onlineUsers) GetAll() (ups []*UserProcess) {
 		ups = append(ups, up)
 	}
 	return
+}
+
+func (userMgr *onlineUsers) GetIDbyConn(Conn net.Conn) (id int, err error) {
+	for id, up := range userMgr.users {
+		if Conn == up.Conn {
+			return id, nil
+		}
+	}
+	return 0, fmt.Errorf("GetIDbyConn failed : conn 不存在")
 }
 
 //UpdateUserState 通知其他用户有用户状态发生该表，通知每个user使用的是up.updateUserState函数

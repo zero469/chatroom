@@ -19,7 +19,8 @@ const (
 	RegisterSuccessCode = 200
 
 	//用户状态
-	UserOnlineState = "UserOnlineState"
+	UserOnlineState  = "UserOnlineState"
+	UserOfflineState = "UserOfflineState"
 )
 
 //Message 为客户端和服务器公用的消息结构

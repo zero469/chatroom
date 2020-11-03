@@ -9,8 +9,8 @@ import (
 var onlineUsers map[int]*message.User = make(map[int]*message.User, 16)
 
 func showOnlineUsers() {
-	for id := range onlineUsers {
-		if id == myID {
+	for id, user := range onlineUsers {
+		if id == myID || user.UserState == message.UserOfflineState {
 			continue
 		}
 		fmt.Println("用户id : ", id)
