@@ -3,6 +3,7 @@ package process
 import (
 	"encoding/json"
 	"fmt"
+	"go_code/chapter18/project3/client/model"
 	"go_code/chapter18/project3/client/utils"
 	"go_code/chapter18/project3/common/message"
 	"net"
@@ -127,6 +128,8 @@ func (up *UserProcess) Login(userID int, userPWD string) (err error) {
 	if loginResMes.Code == message.LoginSuccessCode {
 		fmt.Println("登录成功")
 		myID = userID
+		model.InitCurUser(userID, conn)
+
 		//1. 显示在线用户列表
 		fmt.Println("当前在线用户：")
 		for _, id := range loginResMes.Users {

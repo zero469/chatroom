@@ -54,6 +54,7 @@ func (ps *Process) MainProcess() (err error) {
 
 //ServerProcess 根据客户端发送的消息种类调用不同的处理函数
 func (ps *Process) ServerProcess(mes *message.Message) (err error) {
+	fmt.Println(mes)
 	switch mes.Type {
 	case message.LoginMesType:
 		//处理登陆逻辑
@@ -67,6 +68,7 @@ func (ps *Process) ServerProcess(mes *message.Message) (err error) {
 			Conn: ps.Conn,
 		}
 		return ups.ServerProcessRegister(mes)
+
 	default:
 		err = errors.New("ServerProcess failed : 消息类型不存在")
 		return
