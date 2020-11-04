@@ -154,23 +154,4 @@ func (up *UserProcess) Login(userID int, userPWD string) (err error) {
 	return nil
 }
 
-func serverProcessMes(Conn net.Conn) {
-	tf := &utils.Transfer{
-		Conn: Conn,
-	}
-	for {
-		fmt.Println("客户端等待服务器发送消息")
-		mes, err := tf.ReadPkg()
-		if err != nil {
-			fmt.Println("tf.ReadPkg err=", err)
-			return
-		}
-		fmt.Println("mes = ", mes)
-		switch mes.Type {
-		case message.UpdataUserStateMesType:
-			updateUserState(mes)
-		default:
-			break
-		}
-	}
-}
+
