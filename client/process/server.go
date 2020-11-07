@@ -2,6 +2,9 @@ package process
 
 import (
 	"fmt"
+	"go_code/chapter18/project3/client/utils"
+	"go_code/chapter18/project3/common/message"
+	"net"
 	"os"
 )
 
@@ -34,5 +37,26 @@ func ShowMenu() {
 		os.Exit(0)
 	default:
 		fmt.Println("输入错误")
+	}
+}
+
+func serverProcessMes(Conn net.Conn) {
+	tf := &utils.Transfer{
+		Conn: Conn,
+	}
+	for {
+		fmt.Println("客户端等待服务器发送消息")
+		mes, err := tf.ReadPkg()
+		if err != nil {
+			fmt.Println("tf.ReadPkg err=", err)
+			return
+		}
+		fmt.Println("mes = ", mes)
+		switch mes.Type {
+		case message.UpdataUserStateMesType:
+			updateUserState(mes)
+		default:
+			fmt.Println("消息类型错误")
+		}
 	}
 }
