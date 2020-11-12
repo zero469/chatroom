@@ -30,12 +30,12 @@ func main() {
 	initUserDao()
 	fmt.Println("新结构 开始在8889端口监听")
 	listen, err := net.Listen("tcp", "0.0.0.0:8889") //监听端口8889
-	defer listen.Close()
 
 	if err != nil {
-		fmt.Println("监听失败...")
+		fmt.Println("监听失败...", err)
 		return
 	}
+	defer listen.Close()
 
 	for {
 		fmt.Println("等待连接")
