@@ -59,7 +59,7 @@ func (smsp *SmsProcess) ServerProcessSms(mes *message.Message) (err error) {
 		}
 		err = temp.transferSmsMes(data)
 		if err != nil {
-			fmt.Println("serverProcessSms failed : %v", err)
+			fmt.Printf("serverProcessSms failed : %v\n", err)
 		}
 	}
 	return nil

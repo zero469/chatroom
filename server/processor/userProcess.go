@@ -99,7 +99,6 @@ func (ups *UserProcess) ServerProcessLogin(mes *message.Message) (err error) {
 		UserMgr.Add(loginMes.UserId, ups)
 
 		//广播在线用户列表
-		//TODO:重构上线广播代码，使用独立的消息类型，后续可扩展下线广播
 		//1. 给登录成功的用户发送在线用户列表
 		loginResMes.Users = make([]int, 0)
 		for id := range UserMgr.users {

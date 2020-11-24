@@ -17,12 +17,11 @@ type Process struct {
 
 //MainProcess 处理客户端连接函数
 func (ps *Process) MainProcess() (err error) {
+	//0. 创建transfer实例
+	tfer := utils.Transfer{
+		Conn: ps.Conn,
+	}
 	for {
-
-		//0. 创建transfer实例
-		tfer := utils.Transfer{
-			Conn: ps.Conn,
-		}
 
 		//1. 读取客户端发送的包并反序列化为结构体
 		mes, err := tfer.ReadPkg()
@@ -54,7 +53,6 @@ func (ps *Process) MainProcess() (err error) {
 
 //ServerProcess 根据客户端发送的消息种类调用不同的处理函数
 func (ps *Process) ServerProcess(mes *message.Message) (err error) {
-	fmt.Println(mes)
 	switch mes.Type {
 	case message.LoginMesType:
 		//处理登陆逻辑

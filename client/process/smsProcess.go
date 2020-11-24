@@ -41,3 +41,18 @@ func (smsp *SmsProcess) SendGroupMes(content string) (err error) {
 	}
 	return nil
 }
+
+//将服务器发送的用户消息添加到历史消息列表中
+func rcvSmsMes(mes message.Message) (err error) {
+	var smsResMes message.SmsResMes
+	err = json.Unmarshal([]byte(mes.Data), &smsResMes)
+	if err != nil {
+		return fmt.Errorf("rcvSmsMes failed : %v", err)
+	}
+	HistoryMes.AddMes(userMes{
+		sender:   smsResMes.SenderID,
+		sendTime: smsResMes.SendTime,
+		content:  smsResMes.Content,
+	})
+	return nil
+}
