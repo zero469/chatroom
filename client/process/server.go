@@ -13,10 +13,10 @@ var myID int
 //ShowMenu 展示登录成功后的界面
 func ShowMenu() {
 	fmt.Println("----------------------恭喜登录成功----------------------")
-	fmt.Println("					   1.显示在线用户列表")
-	fmt.Println("					   2.发送信息")
-	fmt.Println("					   3.信息列表")
-	fmt.Println("					   4.退出系统")
+	fmt.Println("                      1.显示在线用户列表")
+	fmt.Println("                      2.发送信息")
+	fmt.Println("                      3.信息列表")
+	fmt.Println("                      4.退出系统")
 	fmt.Println("请选择(1-4):")
 	var key int
 	var mesContent string
@@ -31,7 +31,7 @@ func ShowMenu() {
 		smsP := &SmsProcess{}
 		smsP.SendGroupMes(mesContent)
 	case 3:
-		fmt.Println("信息列表")
+		fmt.Println("信息列表: ")
 		HistoryMes.ShowMesList()
 	case 4:
 		fmt.Println("退出系统")
@@ -42,6 +42,7 @@ func ShowMenu() {
 }
 
 func serverProcessMes(Conn net.Conn) {
+	initMesMgr()
 	tf := &utils.Transfer{
 		Conn: Conn,
 	}
@@ -51,7 +52,6 @@ func serverProcessMes(Conn net.Conn) {
 			fmt.Println("tf.ReadPkg err=", err)
 			return
 		}
-		fmt.Println("mes = ", mes)
 		switch mes.Type {
 		//更新在线用户状态
 		case message.UpdataUserStateMesType:
