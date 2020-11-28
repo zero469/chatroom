@@ -3,17 +3,19 @@ package process
 import (
 	"encoding/json"
 	"fmt"
+	"go_code/chapter18/project3/client/model"
 	"go_code/chapter18/project3/common/message"
 )
 
 var onlineUsers map[int]*message.User = make(map[int]*message.User, 16)
 
 func showOnlineUsers() {
+	// fmt.Printf("当前在线人数：%v\n")
 	for id, user := range onlineUsers {
-		if id == myID || user.UserState == message.UserOfflineState {
+		if id == model.CurUser.UserID || user.UserState == message.UserOfflineState {
 			continue
 		}
-		fmt.Println("用户id : ", id)
+		fmt.Println("* 用户id : ", id)
 	}
 }
 

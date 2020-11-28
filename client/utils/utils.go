@@ -1,11 +1,13 @@
 package utils
 
 import (
+	"bufio"
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
 	"go_code/chapter18/project3/common/message"
 	"net"
+	"os"
 )
 
 //Transfer 处理收发包
@@ -62,4 +64,13 @@ func (transfer *Transfer) WritePkg(data []byte) (err error) {
 		return
 	}
 	return
+}
+
+//读取一行消息
+func ReadLine() (err error, mes string) {
+	input := bufio.NewScanner(os.Stdin)
+	if !input.Scan() {
+		err = input.Err()
+	}
+	return err, input.Text()
 }

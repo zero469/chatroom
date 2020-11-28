@@ -38,7 +38,7 @@ func (mesMgr *MesMgr) ShowMesList() {
 	mesMgr.lock.RLock()
 	for _, v := range mesMgr.mesList {
 		tm := time.Unix(v.sendTime, 0)
-		fmt.Printf("+ [%v] %v: %v\n", tm.Format("15:04:05"), v.sender, v.content)
+		fmt.Printf("* [%v] %v: %v\n", tm.Format("15:04:05"), v.sender, v.content)
 	}
 	mesMgr.lock.RUnlock()
 }

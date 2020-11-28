@@ -27,7 +27,7 @@ func ShowMenu() {
 		showOnlineUsers()
 	case 2:
 		fmt.Println("请输入信息：")
-		fmt.Scanln(&mesContent)
+		_, mesContent = utils.ReadLine()
 		smsP := &SmsProcess{}
 		smsP.SendGroupMes(mesContent)
 	case 3:
@@ -41,8 +41,13 @@ func ShowMenu() {
 	}
 }
 
-func serverProcessMes(Conn net.Conn) {
+func initAll() {
 	initMesMgr()
+}
+
+func serverProcessMes(Conn net.Conn) {
+
+	initAll()
 	tf := &utils.Transfer{
 		Conn: Conn,
 	}

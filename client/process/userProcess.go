@@ -127,23 +127,24 @@ func (up *UserProcess) Login(userID int, userPWD string) (err error) {
 
 	if loginResMes.Code == message.LoginSuccessCode {
 		fmt.Println("登录成功")
-		myID = userID
+		myID = userID //TODO:删除变量myID
+
 		model.InitCurUser(userID, conn)
 
-		//1. 显示在线用户列表
-		fmt.Println("当前在线用户：")
+		//1. 初始化UserMgr
 		for _, id := range loginResMes.Users {
-			if id == myID {
+			if id == model.CurUser.UserID {
 				continue
 			}
-			//初始化在线用户列表
 			onlineUsers[id] = &message.User{
 				UserID: id,
 			}
-			fmt.Println("user id = ", id)
 		}
+		//2. 打印在线用户
+		showOnlineUsers()
+
 		go serverProcessMes(conn)
-		//2. 显示登陆成功的界面
+		//3. 显示登陆成功的界面
 		for {
 			ShowMenu()
 		}
@@ -153,5 +154,3 @@ func (up *UserProcess) Login(userID int, userPWD string) (err error) {
 
 	return nil
 }
-
-
