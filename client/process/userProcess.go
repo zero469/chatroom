@@ -127,7 +127,6 @@ func (up *UserProcess) Login(userID int, userPWD string) (err error) {
 
 	if loginResMes.Code == message.LoginSuccessCode {
 		fmt.Println("登录成功")
-		myID = userID //TODO:删除变量myID
 
 		model.InitCurUser(userID, conn)
 

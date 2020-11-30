@@ -8,8 +8,6 @@ import (
 	"os"
 )
 
-var myID int
-
 //ShowMenu 展示登录成功后的界面
 func ShowMenu() {
 	fmt.Println("----------------------恭喜登录成功----------------------")
@@ -43,6 +41,7 @@ func ShowMenu() {
 
 func initAll() {
 	initMesMgr()
+	//TODO:统一调用该接口初始化数据
 }
 
 func serverProcessMes(Conn net.Conn) {
