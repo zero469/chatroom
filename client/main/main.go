@@ -1,8 +1,8 @@
 package main
 
 import (
+	"chatroom/client/process"
 	"fmt"
-	"go_code/chapter18/project3/client/process"
 )
 
 var userID int
@@ -41,7 +41,7 @@ func main() {
 
 			fmt.Printf("请输入用户名 :")
 			fmt.Scanln(&userName)
-			
+
 			up := &process.UserProcess{}
 			_ = up.Register(userID, userPWD, userPWD)
 		case 3:

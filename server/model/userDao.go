@@ -1,9 +1,9 @@
 package model
 
 import (
+	"chatroom/common/message"
 	"encoding/json"
 	"fmt"
-	"go_code/chapter18/project3/common/message"
 
 	"github.com/redigo/redis"
 )

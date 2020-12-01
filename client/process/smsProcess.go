@@ -1,11 +1,11 @@
 package process
 
 import (
+	"chatroom/client/model"
+	"chatroom/client/utils"
+	"chatroom/common/message"
 	"encoding/json"
 	"fmt"
-	"go_code/chapter18/project3/client/model"
-	"go_code/chapter18/project3/client/utils"
-	"go_code/chapter18/project3/common/message"
 )
 
 type SmsProcess struct {

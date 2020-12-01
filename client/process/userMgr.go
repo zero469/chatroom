@@ -1,10 +1,10 @@
 package process
 
 import (
+	"chatroom/client/model"
+	"chatroom/common/message"
 	"encoding/json"
 	"fmt"
-	"go_code/chapter18/project3/client/model"
-	"go_code/chapter18/project3/common/message"
 )
 
 var onlineUsers map[int]*message.User = make(map[int]*message.User, 16)
