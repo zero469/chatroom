@@ -51,15 +51,15 @@
 ### 下载代码
 ```
 cd ${GOPATH}/src
-git clone https://github.com/zero469/ChatRoom.git
+git clone https://github.com/zero469/chatroom.git
 ```
 ### 编译运行
 ```
 //服务器
-go build -o server.exe ChatRoom/server/main
+go build -o server.exe chatroom/server/main
 server.exe 
 //客户端
-go build -o client.exe ChatRoom/client/main
+go build -o client.exe chatroom/client/main
 client.exe
 ```
 ---

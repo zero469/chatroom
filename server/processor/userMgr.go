@@ -1,8 +1,8 @@
 package processor
 
 import (
+	"chatroom/common/message"
 	"fmt"
-	"go_code/chapter18/project3/common/message"
 	"net"
 )
 

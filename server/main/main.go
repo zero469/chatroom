@@ -1,8 +1,8 @@
 package main
 
 import (
+	"chatroom/server/model"
 	"fmt"
-	"go_code/chapter18/project3/server/model"
 	"net"
 	"time"
 )

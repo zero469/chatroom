@@ -2,10 +2,11 @@ package process
 
 import (
 	"fmt"
-	"go_code/chapter18/project3/client/utils"
-	"go_code/chapter18/project3/common/message"
 	"net"
 	"os"
+
+	"chatroom/client/utils"
+	"chatroom/common/message"
 )
 
 //ShowMenu 展示登录成功后的界面

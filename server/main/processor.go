@@ -1,11 +1,11 @@
 package main
 
 import (
+	"chatroom/common/message"
+	"chatroom/server/processor"
+	"chatroom/server/utils"
 	"errors"
 	"fmt"
-	"go_code/chapter18/project3/common/message"
-	"go_code/chapter18/project3/server/processor"
-	"go_code/chapter18/project3/server/utils"
 	"io"
 	"net"
 )
