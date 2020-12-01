@@ -64,5 +64,5 @@ client.exe
 ```
 ---
 # TODO:
-- [ ] 重构客户端userMgr，增加互斥锁
+- [x] 重构客户端userMgr，增加互斥锁
 - [ ] 点对点聊天

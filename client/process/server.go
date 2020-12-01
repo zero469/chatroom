@@ -11,7 +11,7 @@ import (
 
 //ShowMenu 展示登录成功后的界面
 func ShowMenu() {
-	fmt.Println("----------------------恭喜登录成功----------------------")
+	fmt.Println("----------------------主菜单----------------------")
 	fmt.Println("                      1.显示在线用户列表")
 	fmt.Println("                      2.发送信息")
 	fmt.Println("                      3.信息列表")
@@ -22,8 +22,7 @@ func ShowMenu() {
 	fmt.Scanln(&key)
 	switch key {
 	case 1:
-		fmt.Println("在线用户：")
-		showOnlineUsers()
+		onlineUsers.showOnlineUsers()
 	case 2:
 		fmt.Println("请输入信息：")
 		_, mesContent = utils.ReadLine()
@@ -42,7 +41,6 @@ func ShowMenu() {
 
 func initAll() {
 	initMesMgr()
-	//TODO:统一调用该接口初始化数据
 }
 
 func serverProcessMes(Conn net.Conn) {
@@ -60,7 +58,7 @@ func serverProcessMes(Conn net.Conn) {
 		switch mes.Type {
 		//更新在线用户状态
 		case message.UpdataUserStateMesType:
-			updateUserState(mes)
+			onlineUsers.updateUserState(mes)
 		//接受其他用户发送的消息
 		case message.SmsResMesType:
 			rcvSmsMes(mes)
