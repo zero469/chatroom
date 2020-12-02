@@ -1,6 +1,6 @@
 # Golang 聊天室项目
 ## 项目简介
-本项目为使用Golang和redis实现的Scoket聊天室，主要功能如下：
+本项目为使用Golang和redis实现的Socket聊天室，主要功能如下：
 1. 用户注册、登录
 2. 在线用户列表
 3. 群聊
@@ -64,5 +64,5 @@ client.exe
 ```
 ---
 # TODO:
-- [ ] 重构客户端userMgr，增加互斥锁
+- [x] 重构客户端userMgr，增加互斥锁
 - [ ] 点对点聊天

@@ -131,16 +131,15 @@ func (up *UserProcess) Login(userID int, userPWD string) (err error) {
 		model.InitCurUser(userID, conn)
 
 		//1. 初始化UserMgr
+		initUserMgr()
 		for _, id := range loginResMes.Users {
-			if id == model.CurUser.UserID {
-				continue
-			}
-			onlineUsers[id] = &message.User{
-				UserID: id,
+			onlineUsers.userList[id] = &message.User{
+				UserID:    id,
+				UserState: message.UserOnlineState,
 			}
 		}
 		//2. 打印在线用户
-		showOnlineUsers()
+		onlineUsers.showOnlineUsers()
 
 		go serverProcessMes(conn)
 		//3. 显示登陆成功的界面
