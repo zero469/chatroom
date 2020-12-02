@@ -38,7 +38,7 @@ func (ups *UserProcess) ServerProcessRegister(mes *message.Message) (err error) 
 		}
 	} else {
 		regiResMes.Code = message.RegisterSuccessCode
-		fmt.Printf("用户 %v 注册成功", user.UserName)
+		fmt.Printf("用户 %v 注册成功\n", user.UserName)
 	}
 
 	var resMes message.Message
