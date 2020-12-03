@@ -96,13 +96,15 @@ func (ups *UserProcess) ServerProcessLogin(mes *message.Message) (err error) {
 	} else {
 		loginResMes.Code = message.LoginSuccessCode
 		//登录成功后将该用户加入到UserMgr中
-		UserMgr.Add(loginMes.UserId, ups)
+		UserMgr.Add(loginMes.UserId, &model.ClientConn{
+			Conn:     ups.Conn,
+			UserName: loginMes.UserName,
+		})
 
 		//广播在线用户列表
 		//1. 给登录成功的用户发送在线用户列表
 		loginResMes.Users = make([]int, 0)
 		for id := range UserMgr.users {
-			fmt.Println("userid : ", id, "up : ", UserMgr.users[id])
 			loginResMes.Users = append(loginResMes.Users, id)
 		}
 		//2. 更新其他在线用户的在线用户列表
