@@ -20,7 +20,6 @@ func (transfer *Transfer) ReadPkg() (mes message.Message, err error) {
 	//1 读取mesData的长度
 	_, err = transfer.Conn.Read(transfer.Buf[:4])
 	if err != nil {
-		//err = errors.New("read pkg header error")
 		return
 	}
 	pkgLen := int(binary.BigEndian.Uint32(transfer.Buf[:4]))
@@ -29,7 +28,6 @@ func (transfer *Transfer) ReadPkg() (mes message.Message, err error) {
 	//2 读取mesData
 	n, err := transfer.Conn.Read(transfer.Buf[:pkgLen])
 	if n != pkgLen || err != nil {
-		//err = errors.New("read pkg body error")
 		return
 	}
 
