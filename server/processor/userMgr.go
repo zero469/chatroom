@@ -5,6 +5,7 @@ import (
 	"chatroom/server/model"
 	"fmt"
 	"net"
+	"sync"
 )
 
 //UserMgr 在线用户管理对象
@@ -13,6 +14,7 @@ var UserMgr *userMgr
 type userMgr struct {
 	//userId  ClientConn
 	users map[int]*model.ClientConn
+	lock  sync.RWMutex
 }
 
 func init() {
@@ -22,11 +24,15 @@ func init() {
 }
 
 func (um *userMgr) Add(userID int, cc *model.ClientConn) {
+	um.lock.Lock()
 	um.users[userID] = cc
+	um.lock.Unlock()
 }
 
 func (um *userMgr) Del(userID int) {
+	um.lock.Lock()
 	delete(um.users, userID)
+	um.lock.Unlock()
 }
 
 func (um *userMgr) Update(userID int, cc *model.ClientConn) {
@@ -34,23 +40,30 @@ func (um *userMgr) Update(userID int, cc *model.ClientConn) {
 }
 
 func (um *userMgr) Get(userID int) (cc *model.ClientConn) {
-	return um.users[userID]
+	um.lock.RLock()
+	cc = um.users[userID]
+	um.lock.RUnlock()
+	return
 }
 
 func (um *userMgr) GetAll() (ccs []*model.ClientConn) {
 	ccs = make([]*model.ClientConn, 0, len(um.users))
+	um.lock.RLock()
 	for _, cc := range um.users {
 		ccs = append(ccs, cc)
 	}
+	um.lock.RUnlock()
 	return
 }
 
 func (um *userMgr) GetIDbyConn(Conn net.Conn) (id int, err error) {
+	um.lock.RLock()
 	for id, cc := range um.users {
 		if Conn == cc.Conn {
 			return id, nil
 		}
 	}
+	um.lock.RUnlock()
 	return 0, fmt.Errorf("GetIDbyConn failed : conn 不存在")
 }
 

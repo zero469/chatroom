@@ -23,7 +23,6 @@ func (transfer *Transfer) ReadPkg() (mes message.Message, err error) {
 		return
 	}
 	pkgLen := int(binary.BigEndian.Uint32(transfer.Buf[:4]))
-	fmt.Println("服务器读取到mesData的长度 : ", pkgLen)
 
 	//2 读取mesData
 	n, err := transfer.Conn.Read(transfer.Buf[:pkgLen])

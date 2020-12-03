@@ -105,6 +105,8 @@ func (ups *UserProcess) ServerProcessLogin(mes *message.Message) (err error) {
 		//广播在线用户列表
 		//1. 给登录成功的用户发送在线用户列表
 		loginResMes.Users = make([]message.User, 0)
+
+		UserMgr.lock.RLock()
 		for id, cc := range UserMgr.users {
 			loginResMes.Users = append(loginResMes.Users,
 				message.User{
@@ -112,6 +114,8 @@ func (ups *UserProcess) ServerProcessLogin(mes *message.Message) (err error) {
 					UserName: cc.UserName,
 				})
 		}
+		UserMgr.lock.RUnlock()
+
 		//2. 更新其他在线用户的在线用户列表
 		UpdateUserState(loginMes.UserId, message.UserOnlineState)
 
