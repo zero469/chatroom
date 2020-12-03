@@ -28,7 +28,7 @@ func (userMgr *UserMgr) showOnlineUsers() {
 		if user.UserState == message.UserOfflineState {
 			continue
 		}
-		fmt.Printf("%10v%20v\n", id, "TODO")
+		fmt.Printf("%10v%20v\n", id, user.UserName)
 	}
 	userMgr.lock.RUnlock()
 }

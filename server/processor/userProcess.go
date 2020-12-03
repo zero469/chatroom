@@ -82,6 +82,7 @@ func (ups *UserProcess) ServerProcessLogin(mes *message.Message) (err error) {
 	var loginResMes message.LoginResMes
 
 	user, err := model.MyUserDao.Login(loginMes.UserId, loginMes.UserPwd)
+
 	if err != nil {
 		if err == model.ERROR_USER_NOTEXISTS {
 			loginResMes.Code = message.UnRegisterCode
@@ -98,14 +99,18 @@ func (ups *UserProcess) ServerProcessLogin(mes *message.Message) (err error) {
 		//登录成功后将该用户加入到UserMgr中
 		UserMgr.Add(loginMes.UserId, &model.ClientConn{
 			Conn:     ups.Conn,
-			UserName: loginMes.UserName,
+			UserName: user.UserName,
 		})
 
 		//广播在线用户列表
 		//1. 给登录成功的用户发送在线用户列表
-		loginResMes.Users = make([]int, 0)
-		for id := range UserMgr.users {
-			loginResMes.Users = append(loginResMes.Users, id)
+		loginResMes.Users = make([]message.User, 0)
+		for id, cc := range UserMgr.users {
+			loginResMes.Users = append(loginResMes.Users,
+				message.User{
+					UserID:   id,
+					UserName: cc.UserName,
+				})
 		}
 		//2. 更新其他在线用户的在线用户列表
 		UpdateUserState(loginMes.UserId, message.UserOnlineState)

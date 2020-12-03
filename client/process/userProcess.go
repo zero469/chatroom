@@ -132,10 +132,11 @@ func (up *UserProcess) Login(userID int, userPWD string) (err error) {
 
 		//1. 初始化UserMgr
 		initUserMgr()
-		for _, id := range loginResMes.Users {
-			onlineUsers.userList[id] = &message.User{
-				UserID:    id,
+		for _, user := range loginResMes.Users {
+			onlineUsers.userList[user.UserID] = &message.User{
+				UserID:    user.UserID,
 				UserState: message.UserOnlineState,
+				UserName:  user.UserName,
 			}
 		}
 		//2. 打印在线用户
