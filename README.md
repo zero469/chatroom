@@ -66,3 +66,4 @@ client.exe
 # TODO:
 - [x] 重构客户端userMgr，增加互斥锁
 - [ ] 点对点聊天
+- [ ] 在线用户能显示用户Name
