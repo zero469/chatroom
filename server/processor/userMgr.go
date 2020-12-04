@@ -2,56 +2,68 @@ package processor
 
 import (
 	"chatroom/common/message"
+	"chatroom/server/model"
 	"fmt"
 	"net"
+	"sync"
 )
 
-//UserMgr 服务器端全局在线用户管理对象
-var UserMgr *onlineUsers
+//UserMgr 在线用户管理对象
+var UserMgr *userMgr
 
-type onlineUsers struct {
-	//key : userId | value : UserProcess
-	users map[int]*UserProcess
+type userMgr struct {
+	//userId  ClientConn
+	users map[int]*model.ClientConn
+	lock  sync.RWMutex
 }
 
 func init() {
-	UserMgr = &onlineUsers{
-		users: make(map[int]*UserProcess),
+	UserMgr = &userMgr{
+		users: make(map[int]*model.ClientConn),
 	}
 }
 
-//增删查改接口
-
-func (userMgr *onlineUsers) Add(userID int, up *UserProcess) {
-	userMgr.users[userID] = up
+func (um *userMgr) Add(userID int, cc *model.ClientConn) {
+	um.lock.Lock()
+	um.users[userID] = cc
+	um.lock.Unlock()
 }
 
-func (userMgr *onlineUsers) Del(userID int) {
-	delete(userMgr.users, userID)
+func (um *userMgr) Del(userID int) {
+	um.lock.Lock()
+	delete(um.users, userID)
+	um.lock.Unlock()
 }
 
-func (userMgr *onlineUsers) Update(userID int, up *UserProcess) {
-	userMgr.Add(userID, up)
+func (um *userMgr) Update(userID int, cc *model.ClientConn) {
+	um.Add(userID, cc)
 }
 
-func (userMgr *onlineUsers) Get(userID int) (up *UserProcess) {
-	return userMgr.users[userID]
-}
-
-func (userMgr *onlineUsers) GetAll() (ups []*UserProcess) {
-	ups = make([]*UserProcess, 0, len(userMgr.users))
-	for _, up := range userMgr.users {
-		ups = append(ups, up)
-	}
+func (um *userMgr) Get(userID int) (cc *model.ClientConn) {
+	um.lock.RLock()
+	cc = um.users[userID]
+	um.lock.RUnlock()
 	return
 }
 
-func (userMgr *onlineUsers) GetIDbyConn(Conn net.Conn) (id int, err error) {
-	for id, up := range userMgr.users {
-		if Conn == up.Conn {
+func (um *userMgr) GetAll() (ccs []*model.ClientConn) {
+	ccs = make([]*model.ClientConn, 0, len(um.users))
+	um.lock.RLock()
+	for _, cc := range um.users {
+		ccs = append(ccs, cc)
+	}
+	um.lock.RUnlock()
+	return
+}
+
+func (um *userMgr) GetIDbyConn(Conn net.Conn) (id int, err error) {
+	um.lock.RLock()
+	for id, cc := range um.users {
+		if Conn == cc.Conn {
 			return id, nil
 		}
 	}
+	um.lock.RUnlock()
 	return 0, fmt.Errorf("GetIDbyConn failed : conn 不存在")
 }
 
@@ -63,11 +75,14 @@ func UpdateUserState(userID int, userStauts string) {
 		State:  userStauts,
 	}
 
-	for id, up := range UserMgr.users {
+	for id, cc := range UserMgr.users {
 		if id == userID {
 			continue
 		}
 
-		up.updateUserState(mes)
+		//构造临时userprocess对象
+		(&UserProcess{
+			Conn: cc.Conn,
+		}).updateUserState(mes)
 	}
 }

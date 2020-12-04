@@ -28,7 +28,7 @@ func process(conn net.Conn) {
 func main() {
 	initPool("localhost:6379", 16, 0, 300*time.Second)
 	initUserDao()
-	fmt.Println("新结构 开始在8889端口监听")
+	fmt.Println("开始在8889端口监听")
 	listen, err := net.Listen("tcp", "0.0.0.0:8889") //监听端口8889
 
 	if err != nil {

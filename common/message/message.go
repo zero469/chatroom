@@ -42,7 +42,7 @@ type LoginMes struct {
 type LoginResMes struct {
 	Code  int    `json:"code"`  //返回状态码
 	Error string `json:"error"` //错误信息
-	Users []int  `json:"users"`
+	Users []User   `json:"users"`
 }
 
 type RegisterMes struct {

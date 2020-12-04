@@ -22,12 +22,13 @@ func initUserMgr() {
 
 func (userMgr *UserMgr) showOnlineUsers() {
 	userMgr.lock.RLock()
-	fmt.Printf("当前在线人数：%v\n", len(userMgr.userList))
+	fmt.Printf("当前在线用户(%v)\n", len(userMgr.userList))
+	fmt.Printf("%10v%20v\n", "ID", "NAME")
 	for id, user := range userMgr.userList {
 		if user.UserState == message.UserOfflineState {
 			continue
 		}
-		fmt.Println("* 用户id : ", id)
+		fmt.Printf("%10v%20v\n", id, user.UserName)
 	}
 	userMgr.lock.RUnlock()
 }
