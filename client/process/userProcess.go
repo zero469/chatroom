@@ -5,6 +5,7 @@ import (
 	"chatroom/client/utils"
 	"chatroom/common/message"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net"
 )
@@ -152,4 +153,131 @@ func (up *UserProcess) Login(userID int, userPWD string) (err error) {
 	}
 
 	return nil
+}
+
+func (up *UserProcess) checkOldPwd(oldPwd string) (ok bool, err error) {
+	ok = true
+	err = nil
+
+	var mes message.Message
+	mes.Type = message.CheckOldPwdMesType
+
+	var dataMes message.CheckOldPwdMes
+	dataMes.OldPwd = oldPwd
+	dataMes.ID = model.CurUser.UserID
+
+	data, err := json.Marshal(dataMes)
+	if err != nil {
+		return false, fmt.Errorf("checkOldPwd failed : %v", err)
+	}
+	mes.Data = string(data)
+
+	data, err = json.Marshal(mes)
+	if err != nil {
+		return false, fmt.Errorf("checkOldPwd failed : %v", err)
+	}
+
+	tfer := utils.Transfer{
+		Conn: model.CurUser.Conn,
+	}
+	err = tfer.WritePkg(data)
+	if err != nil {
+		return false, fmt.Errorf("checkOldPwd failed : %v", err)
+	}
+
+	res, err := tfer.ReadPkg()
+	if err != nil {
+		return false, fmt.Errorf("checkOldPwd failed : %v", err)
+	}
+
+	var resMes message.ChangePwdResMes
+	err = json.Unmarshal([]byte(res.Data), &resMes)
+	if err != nil {
+		return false, fmt.Errorf("json.Unmarshal err= %v", err)
+	}
+
+	switch resMes.Code {
+	case message.CheckOldPwdSuccessCode:
+		return true, nil
+	case message.WrongPasswordCode:
+		return false, errors.New("Wrong password")
+	default:
+		return false, errors.New("Server internal error")
+	}
+}
+
+func (up *UserProcess) changeNewPwd(newPwd string) (err error) {
+	var mes message.Message
+	mes.Type = message.ChangeNewPwdMesType
+
+	var dataMes message.ChangeNewPwdMes
+	dataMes.NewPwd = newPwd
+
+	data, err := json.Marshal(dataMes)
+	if err != nil {
+		return fmt.Errorf("changeNewPwd failed : %v", err)
+	}
+	mes.Data = string(data)
+
+	data, err = json.Marshal(mes)
+	if err != nil {
+		return fmt.Errorf("changeNewPwd failed : %v", err)
+	}
+
+	tfer := utils.Transfer{
+		Conn: model.CurUser.Conn,
+	}
+	err = tfer.WritePkg(data)
+	if err != nil {
+		return fmt.Errorf("changeNewPwd failed : %v", err)
+	}
+
+	res, err := tfer.ReadPkg()
+	if err != nil {
+		return fmt.Errorf("changeNewPwd failed : %v", err)
+	}
+
+	var resMes message.ChangePwdResMes
+	err = json.Unmarshal([]byte(res.Data), &resMes)
+	if err != nil {
+		return fmt.Errorf("json.Unmarshal err= %v", err)
+	}
+
+	switch resMes.Code {
+	case message.ChangePwdSuccessCode:
+		return nil
+	default:
+		return errors.New("Server internal error")
+	}
+}
+
+/*ChangePwd is a public function which can change user password
+1. get user's old password and check it
+2. transfer new password to server
+*/
+func (up *UserProcess) ChangePwd() {
+	//1.验证旧密码
+	var oldPwd string
+	fmt.Printf("请输入当前密码：")
+	fmt.Scanln(&oldPwd)
+	ok, err := up.checkOldPwd(oldPwd)
+	if err != nil {
+		fmt.Printf("failed : %v\n", err)
+		return
+	}
+	if !ok {
+		fmt.Println("密码错误")
+		return
+	}
+
+	//2.修改新密码
+	var newPwd string
+	fmt.Printf("请输入新密码：")
+	fmt.Scanln(&newPwd)
+	err = up.changeNewPwd(newPwd)
+	if err != nil {
+		fmt.Printf("密码修改失败：%v\n", err.Error())
+		return
+	}
+	return
 }

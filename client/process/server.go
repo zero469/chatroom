@@ -16,6 +16,7 @@ func ShowMenu() {
 	fmt.Println("                      2.发送信息")
 	fmt.Println("                      3.信息列表")
 	fmt.Println("                      4.退出系统")
+	fmt.Println("                      5.修改密码")
 	fmt.Println("请选择(1-4):")
 	var key int
 	var mesContent string
@@ -34,6 +35,10 @@ func ShowMenu() {
 	case 4:
 		fmt.Println("退出系统")
 		os.Exit(0)
+	case 5:
+		fmt.Println("修改密码") //分两步 1.验证原密码 2.输入新密码
+		up := &UserProcess{}
+		up.ChangePwd()
 	default:
 		fmt.Println("输入错误")
 	}

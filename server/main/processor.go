@@ -71,6 +71,17 @@ func (ps *Process) ServerProcess(mes *message.Message) (err error) {
 			Conn: ps.Conn,
 		}
 		return sp.ServerProcessSms(mes)
+
+	case message.CheckOldPwdMesType:
+		ups := &processor.UserProcess{
+			Conn: ps.Conn,
+		}
+		return ups.CheckPwd(mes)
+	case message.ChangeNewPwdMesType:
+		ups := &processor.UserProcess{
+			Conn: ps.Conn,
+		}
+		return ups.ChangePwd(mes)
 	default:
 		err = errors.New("ServerProcess failed : 消息类型不存在")
 		return
