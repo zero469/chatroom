@@ -86,6 +86,7 @@ type CheckOldPwdMes struct {
 }
 
 type ChangeNewPwdMes struct {
+	ID     int    `json:"id"`
 	NewPwd string `json:"newPwd"`
 }
 

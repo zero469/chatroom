@@ -13,6 +13,10 @@ import (
 type UserProcess struct {
 }
 
+var (
+	ChangePwdCh chan message.Message = make(chan message.Message)
+)
+
 func (up *UserProcess) Register(userID int, userPWD string, userName string) (err error) {
 	conn, err := net.Dial("tcp", "0.0.0.0:8889")
 	if err != nil {
@@ -185,10 +189,7 @@ func (up *UserProcess) checkOldPwd(oldPwd string) (ok bool, err error) {
 		return false, fmt.Errorf("checkOldPwd failed : %v", err)
 	}
 
-	res, err := tfer.ReadPkg()
-	if err != nil {
-		return false, fmt.Errorf("checkOldPwd failed : %v", err)
-	}
+	res := <-ChangePwdCh
 
 	var resMes message.ChangePwdResMes
 	err = json.Unmarshal([]byte(res.Data), &resMes)
@@ -212,6 +213,7 @@ func (up *UserProcess) changeNewPwd(newPwd string) (err error) {
 
 	var dataMes message.ChangeNewPwdMes
 	dataMes.NewPwd = newPwd
+	dataMes.ID = model.CurUser.UserID
 
 	data, err := json.Marshal(dataMes)
 	if err != nil {
@@ -232,10 +234,7 @@ func (up *UserProcess) changeNewPwd(newPwd string) (err error) {
 		return fmt.Errorf("changeNewPwd failed : %v", err)
 	}
 
-	res, err := tfer.ReadPkg()
-	if err != nil {
-		return fmt.Errorf("changeNewPwd failed : %v", err)
-	}
+	res := <-ChangePwdCh
 
 	var resMes message.ChangePwdResMes
 	err = json.Unmarshal([]byte(res.Data), &resMes)

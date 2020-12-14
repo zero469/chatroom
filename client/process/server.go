@@ -67,6 +67,8 @@ func serverProcessMes(Conn net.Conn) {
 		//接受其他用户发送的消息
 		case message.SmsResMesType:
 			rcvSmsMes(mes)
+		case message.ChangePwdResMesType:
+			ChangePwdCh <- mes
 		default:
 			fmt.Println("消息类型错误")
 		}

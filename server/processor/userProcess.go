@@ -206,13 +206,13 @@ func (ups *UserProcess) CheckPwd(mes *message.Message) (err error) {
 }
 
 func (ups *UserProcess) ChangePwd(mes *message.Message) (err error) {
-	var checkPwdMes message.CheckOldPwdMes
-	err = json.Unmarshal([]byte(mes.Data), &checkPwdMes)
+	var changePwdMes message.ChangeNewPwdMes
+	err = json.Unmarshal([]byte(mes.Data), &changePwdMes)
 	if err != nil {
 		return fmt.Errorf("checkPwd failed : %v", err)
 	}
 
-	err = model.MyUserDao.ChangePwd(checkPwdMes.ID, checkPwdMes.OldPwd)
+	err = model.MyUserDao.ChangePwd(changePwdMes.ID, changePwdMes.NewPwd)
 
 	//服务器内部出错了是否还要给客户端发送response
 	var resMesData message.ChangePwdResMes

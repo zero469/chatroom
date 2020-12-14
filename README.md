@@ -67,4 +67,7 @@ client.exe
 - [x] 重构客户端userMgr，增加互斥锁
 - [ ] 点对点聊天
 - [x] 在线用户能显示用户Name
-- [ ] 修改用户名和密码 //serverProcessMes已经在监听服务器发送的消息，如何将监听的权限交给ChangePwd
+- [x] 修改密码
+
+# BUG:
+- [ ] 退出后重新登录无响应
