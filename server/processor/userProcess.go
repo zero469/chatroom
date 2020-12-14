@@ -169,3 +169,75 @@ func (ups *UserProcess) updateUserState(mes *message.UpdataUserStateMes) (err er
 	err = tf.WritePkg(data)
 	return err
 }
+
+func (ups *UserProcess) CheckPwd(mes *message.Message) (err error) {
+	var checkPwdMes message.CheckOldPwdMes
+	err = json.Unmarshal([]byte(mes.Data), &checkPwdMes)
+	if err != nil {
+		return fmt.Errorf("checkPwd failed : %v", err)
+	}
+
+	ok, err := model.MyUserDao.CheckPwd(checkPwdMes.ID, checkPwdMes.OldPwd)
+	if err != nil {
+		return err
+	}
+
+	var resMesData message.ChangePwdResMes
+	if ok {
+		resMesData.Code = message.CheckOldPwdSuccessCode
+	} else {
+		resMesData.Code = message.WrongPasswordCode
+	}
+
+	data, err := json.Marshal(resMesData)
+	if err != nil {
+		return
+	}
+	var resMes message.Message
+	resMes.Type = message.ChangePwdResMesType
+	resMes.Data = string(data)
+
+	tfer := utils.Transfer{
+		Conn: ups.Conn,
+	}
+
+	err = tfer.WriteMes(resMes)
+	return err
+}
+
+func (ups *UserProcess) ChangePwd(mes *message.Message) (err error) {
+	var changePwdMes message.ChangeNewPwdMes
+	err = json.Unmarshal([]byte(mes.Data), &changePwdMes)
+	if err != nil {
+		return fmt.Errorf("checkPwd failed : %v", err)
+	}
+
+	err = model.MyUserDao.ChangePwd(changePwdMes.ID, changePwdMes.NewPwd)
+
+	//服务器内部出错了是否还要给客户端发送response
+	var resMesData message.ChangePwdResMes
+
+	if err != nil {
+		//服务器内部错误，将该信息返回给用户
+		resMesData.Code = message.ServerErrorCode
+	} else {
+		resMesData.Code = message.ChangePwdSuccessCode
+	}
+
+	data, err := json.Marshal(resMesData)
+	if err != nil {
+		//序列化失败，消息无法发送，所以直接return
+		return
+
+	}
+	var resMes message.Message
+	resMes.Type = message.ChangePwdResMesType
+	resMes.Data = string(data)
+
+	tfer := utils.Transfer{
+		Conn: ups.Conn,
+	}
+
+	err = tfer.WriteMes(resMes)
+	return err
+}

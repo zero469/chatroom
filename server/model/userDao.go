@@ -82,3 +82,35 @@ func (dao *UserDao) Register(user *message.User) (err error) {
 
 	return nil
 }
+
+func (dao *UserDao) CheckPwd(ID int, Pwd string) (ok bool, err error) {
+	conn := dao.pool.Get()
+	defer conn.Close()
+	user, err := dao.getUserByID(conn, ID)
+	if err != nil {
+		return false, fmt.Errorf("CheckPwd failed : %v", err)
+	}
+
+	if user.UserPwd == Pwd {
+		return true, nil
+	}
+	return false, nil
+}
+
+func (dao *UserDao) ChangePwd(ID int, Pwd string) (err error) {
+	conn := dao.pool.Get()
+	defer conn.Close()
+	user, err := dao.getUserByID(conn, ID)
+	if err != nil {
+		return fmt.Errorf("ChangePwd failed : %v", err)
+	}
+
+	user.UserPwd = Pwd
+	data, err := json.Marshal(user)
+	if err != nil {
+		fmt.Println("json.Marshal err=", err)
+		return err
+	}
+	conn.Do("HSET", "users", user.UserID, string(data))
+	return nil
+}

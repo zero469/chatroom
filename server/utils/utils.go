@@ -58,3 +58,12 @@ func (transfer *Transfer) WritePkg(data []byte) (err error) {
 	}
 	return
 }
+
+func (transfer *Transfer) WriteMes(mes message.Message) (err error) {
+	data, err := json.Marshal(mes)
+	if err != nil {
+		return
+	}
+	err = transfer.WritePkg(data)
+	return
+}

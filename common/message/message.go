@@ -12,14 +12,21 @@ const (
 
 	SmsMesType    = "SmsMesType"
 	SmsResMesType = "SmsResMesType"
-	//返回状态码
-	UnRegisterCode    = 500
-	LoginSuccessCode  = 200
-	WrongPasswordCode = 403
-	ServerErrorCode   = 505
 
-	UserIdBeenUsedCode  = 400
-	RegisterSuccessCode = 200
+	CheckOldPwdMesType  = "CheckOldPwdMesType"
+	ChangeNewPwdMesType = "ChangeNewPwdMesType"
+	ChangePwdResMesType = "ChangePwdResMesType"
+
+	//返回状态码
+	UnRegisterCode     = 500
+	WrongPasswordCode  = 403
+	ServerErrorCode    = 505
+	UserIdBeenUsedCode = 400
+
+	LoginSuccessCode       = 200
+	RegisterSuccessCode    = 201
+	CheckOldPwdSuccessCode = 202
+	ChangePwdSuccessCode   = 203
 
 	//用户状态
 	UserOnlineState  = "UserOnlineState"
@@ -42,7 +49,7 @@ type LoginMes struct {
 type LoginResMes struct {
 	Code  int    `json:"code"`  //返回状态码
 	Error string `json:"error"` //错误信息
-	Users []User   `json:"users"`
+	Users []User `json:"users"`
 }
 
 type RegisterMes struct {
@@ -71,4 +78,18 @@ type SmsResMes struct {
 	SenderID int    `json:"senderid"`
 	Content  string `json:"content"`
 	SendTime int64  `json:"sendtime"` //unix时间戳，由服务器获取
+}
+
+type CheckOldPwdMes struct {
+	ID     int    `json:"id"`
+	OldPwd string `json:"oldpwd"`
+}
+
+type ChangeNewPwdMes struct {
+	ID     int    `json:"id"`
+	NewPwd string `json:"newPwd"`
+}
+
+type ChangePwdResMes struct {
+	Code int `json:"code"`
 }
