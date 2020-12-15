@@ -28,6 +28,7 @@ func (ps *Process) MainProcess() (err error) {
 		if err != nil {
 			//此处表示用户退出客户端，即以及下线，需要广播该用户的下线状态，从UserMgr中拿到userID，然后将该用户从UserMgr中删除并广播该用户已下线
 			userID, err := processor.UserMgr.GetIDbyConn(ps.Conn)
+			fmt.Printf("用户 %v 下线\n", userID)
 			if err == nil {
 				processor.UserMgr.Del(userID)
 				processor.UpdateUserState(userID, message.UserOfflineState)
@@ -59,13 +60,13 @@ func (ps *Process) ServerProcess(mes *message.Message) (err error) {
 		ups := &processor.UserProcess{
 			Conn: ps.Conn,
 		}
-		return ups.ServerProcessLogin(mes)
+		return ups.Login(mes)
 
 	case message.RegisterMesType:
 		ups := &processor.UserProcess{
 			Conn: ps.Conn,
 		}
-		return ups.ServerProcessRegister(mes)
+		return ups.Register(mes)
 	case message.SmsMesType:
 		sp := &processor.SmsProcess{
 			Conn: ps.Conn,

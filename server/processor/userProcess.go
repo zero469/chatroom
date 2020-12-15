@@ -14,8 +14,8 @@ type UserProcess struct {
 	Conn net.Conn
 }
 
-//ServerProcessRegister 处理注册消息
-func (ups *UserProcess) ServerProcessRegister(mes *message.Message) (err error) {
+//Register 处理注册消息
+func (ups *UserProcess) Register(mes *message.Message) (err error) {
 	var regiMes message.RegisterMes
 
 	err = json.Unmarshal([]byte(mes.Data), &regiMes)
@@ -65,8 +65,8 @@ func (ups *UserProcess) ServerProcessRegister(mes *message.Message) (err error) 
 	return
 }
 
-//ServerProcessLogin 处理登录消息
-func (ups *UserProcess) ServerProcessLogin(mes *message.Message) (err error) {
+//Login 处理登录消息
+func (ups *UserProcess) Login(mes *message.Message) (err error) {
 	var loginMes message.LoginMes
 
 	err = json.Unmarshal([]byte(mes.Data), &loginMes)
@@ -119,7 +119,7 @@ func (ups *UserProcess) ServerProcessLogin(mes *message.Message) (err error) {
 		//2. 更新其他在线用户的在线用户列表
 		UpdateUserState(loginMes.UserId, message.UserOnlineState)
 
-		fmt.Printf("用户 %v 登录成功", user.UserName)
+		fmt.Printf("用户 %v 登录成功\n", user.UserName)
 	}
 
 	data, err := json.Marshal(loginResMes)

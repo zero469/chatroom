@@ -251,8 +251,8 @@ func (up *UserProcess) changeNewPwd(newPwd string) (err error) {
 }
 
 /*ChangePwd is a public function which can change user password
-1. get user's old password and check it
-2. transfer new password to server
+1. checkOldPwd : get user's old password and check it
+2. changeNewPwd : transfer new password to server
 */
 func (up *UserProcess) ChangePwd() {
 	//1.验证旧密码
@@ -278,5 +278,6 @@ func (up *UserProcess) ChangePwd() {
 		fmt.Printf("密码修改失败：%v\n", err.Error())
 		return
 	}
+	fmt.Println("修改成功！")
 	return
 }
