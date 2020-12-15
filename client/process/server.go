@@ -17,7 +17,7 @@ func ShowMenu() {
 	fmt.Println("                      3.信息列表")
 	fmt.Println("                      4.退出系统")
 	fmt.Println("                      5.修改密码")
-	fmt.Println("请选择(1-4):")
+	fmt.Println("请选择(1-5):")
 	var key int
 	var mesContent string
 	fmt.Scanln(&key)
