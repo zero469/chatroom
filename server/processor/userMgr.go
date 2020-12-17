@@ -60,6 +60,7 @@ func (um *userMgr) GetIDbyConn(Conn net.Conn) (id int, err error) {
 	um.lock.RLock()
 	for id, cc := range um.users {
 		if Conn == cc.Conn {
+			um.lock.RUnlock()
 			return id, nil
 		}
 	}

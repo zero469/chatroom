@@ -59,7 +59,7 @@ git clone https://github.com/zero469/chatroom.git
 go build -o server.exe chatroom/server/main
 server.exe 
 //客户端
-go build -o client.exe chatroom/client/main
+go build -o client.exe chatroom/client
 client.exe
 ```
 ---
@@ -70,4 +70,4 @@ client.exe
 - [x] 修改密码
 
 # BUG:
-- [ ] 退出后重新登录无响应
+- [x] 退出后重新登录无响应
