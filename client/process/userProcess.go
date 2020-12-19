@@ -201,7 +201,7 @@ func (up *UserProcess) checkOldPwd(oldPwd string) (ok bool, err error) {
 	case message.CheckOldPwdSuccessCode:
 		return true, nil
 	case message.WrongPasswordCode:
-		return false, errors.New("Wrong password")
+		return false, nil
 	default:
 		return false, errors.New("Server internal error")
 	}
